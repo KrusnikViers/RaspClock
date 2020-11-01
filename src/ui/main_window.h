@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 
+#include "core/config.h"
 #include "ui/ui_main_window.h"
 
 namespace rclock::ui {
@@ -9,18 +10,17 @@ namespace rclock::ui {
 class MainWindow : public QMainWindow {
   Q_OBJECT
  public:
-  static MainWindow* instance();
+  explicit MainWindow(core::Config* config);
 
-  MainWindow();
-  ~MainWindow();
+  void onLogRecord(QString log_line);
 
-  void onNewLogLine(const QString& log_line);
-
-private slots:
+ private slots:
   void onSwitchButtonClicked(QWidget* button, QWidget* page);
+  void onUpdateSettingsButtonClicked();
 
  private:
   Ui::MainWindow ui_;
+  core::Config* config_; // Weak reference
 };  // class MainWindow
 
 }  // namespace rclock::ui

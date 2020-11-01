@@ -18,14 +18,16 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_REQUIRED TRUE)
 
 set (SOURCES
+    src/core/app_controller.cpp
+    src/core/app_controller.h
+    src/core/config.cpp
+    src/core/config.h
     src/main.cpp
     src/ui/main_window.cpp
     src/ui/main_window.h
     src/ui/main_window.ui
-    src/ui/square_widget_event_filter.h
-    src/ui/square_widget_event_filter.cpp
-    src/core/config.h
-    src/core/config.cpp
+    src/ui/widget_ratio_filter.cpp
+    src/ui/widget_ratio_filter.h
 )
 
 add_executable(raspclock WIN32 ${SOURCES})

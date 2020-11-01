@@ -4,10 +4,10 @@
 
 namespace rclock::ui {
 
-class SquareWidgetEventFilter : public QObject {
+class WidgetRatioFilter : public QObject {
   Q_OBJECT
  public:
-  static SquareWidgetEventFilter& instance();
+  static WidgetRatioFilter& instance();
 
  protected:
   bool eventFilter(QObject* object, QEvent* event) override;

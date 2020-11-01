@@ -9,20 +9,24 @@ struct GeoCoordinates {
   double longitude = 0.0;
 };
 
+struct AppSettings {
+  QString geo_service_key;
+  GeoCoordinates coordinates;
+};
+
 class Config : public QObject {
   Q_OBJECT
  public:
   Config();
 
-  GeoCoordinates coordinates() const;
+  const AppSettings& get() const { return cached_settings_; }
+  void set(AppSettings new_settings);
 
  private:
   void readData();
+  void writeData();
 
-  struct CachedSettings {
-    std::unique_ptr<GeoCoordinates> geo_data;
-  } cached_settings_;
-
+  AppSettings cached_settings_;
   QSettings settings_;
 };
 

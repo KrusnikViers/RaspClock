@@ -1,4 +1,4 @@
-#include "square_widget_event_filter.h"
+#include "widget_ratio_filter.h"
 
 #include <QDebug>
 #include <QEvent>
@@ -8,14 +8,14 @@
 namespace rclock::ui {
 
 namespace {
-SquareWidgetEventFilter single_instance;
+WidgetRatioFilter single_instance;
 }
 
-SquareWidgetEventFilter& SquareWidgetEventFilter::instance() {
+WidgetRatioFilter& WidgetRatioFilter::instance() {
   return single_instance;
 }
 
-bool SquareWidgetEventFilter::eventFilter(QObject* object, QEvent* event) {
+bool WidgetRatioFilter::eventFilter(QObject* object, QEvent* event) {
   // Resizing window will update only buttons width, so we should adjust
   // height manually to the same value.
   if (event->type() == QEvent::Resize) {
