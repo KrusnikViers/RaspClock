@@ -1,13 +1,14 @@
 #include <QtWidgets>
 
-#include "core/app_controller.h"
+#include "core/config.h"
+#include "ui/main_window.h"
 
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
   QApplication::addLibraryPath(QApplication::applicationDirPath());
 
-  rclock::core::AppController::InitLogging();
-  rclock::core::AppController app_controller;
+  rclock::core::Config config;
+  rclock::ui::MainWindow main_window(&config);
 
   return app.exec();
 }

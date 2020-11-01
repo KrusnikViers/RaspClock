@@ -3,6 +3,9 @@
 #include <QMainWindow>
 
 #include "core/config.h"
+#include "ui/display.h"
+#include "ui/logs.h"
+#include "ui/settings.h"
 #include "ui/ui_main_window.h"
 
 namespace rclock::ui {
@@ -12,15 +15,16 @@ class MainWindow : public QMainWindow {
  public:
   explicit MainWindow(core::Config* config);
 
-  void onLogRecord(QString log_line);
-
  private slots:
   void onSwitchButtonClicked(QWidget* button, QWidget* page);
-  void onUpdateSettingsButtonClicked();
 
  private:
   Ui::MainWindow ui_;
-  core::Config* config_; // Weak reference
-};  // class MainWindow
+
+  // Weak references, owned by stacked widget in |ui_|.
+  Display* display_page_   = nullptr;
+  Settings* settings_page_ = nullptr;
+  Logs* logs_page_         = nullptr;
+};
 
 }  // namespace rclock::ui

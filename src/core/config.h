@@ -10,7 +10,7 @@ struct GeoCoordinates {
 };
 
 struct AppSettings {
-  QString geo_service_key;
+  QString time_zone_service_key;
   GeoCoordinates coordinates;
 };
 
@@ -27,7 +27,6 @@ class Config : public QObject {
   void writeData();
 
   AppSettings cached_settings_;
-  QSettings settings_;
 };
 
 }  // namespace rclock::core

@@ -1,40 +1,30 @@
 #include "core/config.h"
 
+#include <QDir>
+
 namespace rclock::core {
 
 namespace {
 
-const QString kSettingsFileName = "settings.ini";
+const QString kLatitudeName           = "latitude";
+const QString kLongitudeName          = "longitude";
+const QString kTimeZoneServiceKeyName = "time_zone_key";
 
-const QString kGeoDataPrefix     = "geo";
-const QString kGeoServiceKeyName = "geoservice_key";
-const QString kLatitudeName      = "latitude";
-const QString kLongitudeName     = "longitude";
-
-constexpr bool isDebug() {
+QSettings createSettingsIO() {
 #ifndef NDEBUG
-  return true;
+  QDir settings_directory = QDir::current();
 #else
-  return false
-#endif
-}
-
-QDir storage_directory() {
-  if (isDebug()) return QDir::current();
-  QDir data_directory(
+  QDir settings_directory(
       QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-  if (!data_directory.exists()) data_directory.mkpath(".");
-  return data_directory;
+  if (!settings_directory.exists()) data_directory.mkpath(".");
+#endif
+  return QSettings(settings_directory.absoluteFilePath("settings.ini"),
+                   QSettings::IniFormat);
 }
 
 }  // namespace
 
-Config::Config()
-    : QObject(nullptr),
-      settings_(storage_directory().absoluteFilePath(kSettingsFileName),
-                QSettings::IniFormat, this) {
-    readData();
-}
+Config::Config() { readData(); }
 
 void Config::set(AppSettings new_settings) {
   cached_settings_ = std::move(new_settings);
@@ -42,28 +32,26 @@ void Config::set(AppSettings new_settings) {
 }
 
 void Config::readData() {
-  qDebug() << "Reading settings from " << storage_directory().path();
-  settings_.beginGroup(kGeoDataPrefix);
-  cached_settings_.geo_service_key =
-      settings_.value(kGeoServiceKeyName, QString()).toString();
+  QSettings settings_io = createSettingsIO();
+  qDebug() << "Reading settings from " << settings_io.fileName();
   cached_settings_.coordinates.latitude =
-      settings_.value(kLatitudeName, 0.0).toDouble();
+      settings_io.value(kLatitudeName, 0.0).toDouble();
   cached_settings_.coordinates.longitude =
-      settings_.value(kLongitudeName, 0.0).toDouble();
-  settings_.endGroup();
+      settings_io.value(kLongitudeName, 0.0).toDouble();
+  cached_settings_.time_zone_service_key =
+      settings_io.value(kTimeZoneServiceKeyName, QString()).toString();
 
   // Migrate settings, if anything changed in binary.
-  settings_.clear();
   writeData();
 }
 
 void Config::writeData() {
-  qDebug() << "Writing settings to " << storage_directory().path();
-  settings_.beginGroup(kGeoDataPrefix);
-  settings_.setValue(kGeoServiceKeyName, cached_settings_.geo_service_key);
-  settings_.setValue(kLatitudeName, cached_settings_.coordinates.latitude);
-  settings_.setValue(kLongitudeName, cached_settings_.coordinates.longitude);
-  settings_.endGroup();
+  QSettings settings_io = createSettingsIO();
+  qDebug() << "Writing settings to " << settings_io.fileName();
+  settings_io.setValue(kLatitudeName, cached_settings_.coordinates.latitude);
+  settings_io.setValue(kLongitudeName, cached_settings_.coordinates.longitude);
+  settings_io.setValue(kTimeZoneServiceKeyName,
+                       cached_settings_.time_zone_service_key);
 }
 
 }  // namespace rclock::core

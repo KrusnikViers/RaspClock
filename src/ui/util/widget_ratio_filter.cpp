@@ -11,9 +11,7 @@ namespace {
 WidgetRatioFilter single_instance;
 }
 
-WidgetRatioFilter& WidgetRatioFilter::instance() {
-  return single_instance;
-}
+WidgetRatioFilter& WidgetRatioFilter::instance() { return single_instance; }
 
 bool WidgetRatioFilter::eventFilter(QObject* object, QEvent* event) {
   // Resizing window will update only buttons width, so we should adjust
