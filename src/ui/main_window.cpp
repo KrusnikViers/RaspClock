@@ -6,7 +6,8 @@
 
 namespace rclock::ui {
 
-MainWindow::MainWindow(core::Config* config) {
+MainWindow::MainWindow(core::Config* config, core::MainTimer* main_timer,
+                       data::TimeProvider* time_provider) {
   ui_.setupUi(this);
 
   for (QObject* child : ui_.sidebar_layout->children()) {
@@ -16,24 +17,23 @@ MainWindow::MainWindow(core::Config* config) {
     }
   }
 
-  display_page_ = new Display();
+  display_page_ = new Display(main_timer, time_provider);
   ui_.stacked_widget->addWidget(display_page_);
-  QObject::connect(ui_.clock_button, &QPushButton::clicked, [this] {
-    onSwitchButtonClicked(ui_.clock_button, display_page_);
-  });
+  connect(ui_.clock_button, &QPushButton::clicked,
+          [this] { onSwitchButtonClicked(ui_.clock_button, display_page_); });
 
-  settings_page_ = new Settings(config);
+  settings_page_ = new Settings(config, main_timer);
   ui_.stacked_widget->addWidget(settings_page_);
-  QObject::connect(ui_.settings_button, &QPushButton::clicked, [this] {
+  connect(ui_.settings_button, &QPushButton::clicked, [this] {
     onSwitchButtonClicked(ui_.settings_button, settings_page_);
   });
 
   logs_page_ = new Logs();
   ui_.stacked_widget->addWidget(logs_page_);
-  QObject::connect(ui_.logs_button, &QPushButton::clicked, [this] {
-    onSwitchButtonClicked(ui_.logs_button, logs_page_);
-  });
+  connect(ui_.logs_button, &QPushButton::clicked,
+          [this] { onSwitchButtonClicked(ui_.logs_button, logs_page_); });
 
+  onSwitchButtonClicked(ui_.clock_button, display_page_);
   this->show();
 }
 

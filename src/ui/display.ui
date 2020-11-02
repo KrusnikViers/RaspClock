@@ -62,7 +62,7 @@
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
-          <verstretch>4</verstretch>
+          <verstretch>10</verstretch>
          </sizepolicy>
         </property>
         <property name="text">
@@ -74,11 +74,27 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="day_of_week_label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>2</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Day of week</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="date_label">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
-          <verstretch>1</verstretch>
+          <verstretch>3</verstretch>
          </sizepolicy>
         </property>
         <property name="text">

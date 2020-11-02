@@ -5,7 +5,6 @@
 namespace rclock::ui {
 
 class WidgetRatioFilter : public QObject {
-  Q_OBJECT
  public:
   static WidgetRatioFilter& instance();
 

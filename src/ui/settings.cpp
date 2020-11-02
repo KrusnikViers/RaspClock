@@ -2,7 +2,8 @@
 
 namespace rclock::ui {
 
-Settings::Settings(core::Config* config) : config_(config) {
+Settings::Settings(core::Config* config, core::MainTimer* main_timer)
+    : config_(config), main_timer_(main_timer) {
   ui_.setupUi(this);
 
   ui_.time_zone_service_key_edit->setText(config_->get().time_zone_service_key);
