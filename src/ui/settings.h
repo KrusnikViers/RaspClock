@@ -16,6 +16,10 @@ class Settings : public QWidget {
  private slots:
   void onUpdateSettingsButtonClicked();
 
+signals:
+  void fullscreenSwitchRequested();
+  void exitRequested();
+
  private:
   Ui::Settings ui_;
 

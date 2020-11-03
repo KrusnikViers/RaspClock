@@ -27,6 +27,10 @@ MainWindow::MainWindow(core::Config* config, core::MainTimer* main_timer,
   connect(ui_.settings_button, &QPushButton::clicked, [this] {
     onSwitchButtonClicked(ui_.settings_button, settings_page_);
   });
+  connect(settings_page_, &Settings::fullscreenSwitchRequested,  //
+          this, &MainWindow::onFullscreenSwitch);
+  connect(settings_page_, &Settings::exitRequested,  //
+          this, &MainWindow::onExit);
 
   logs_page_ = new Logs();
   ui_.stacked_widget->addWidget(logs_page_);
@@ -43,5 +47,11 @@ void MainWindow::onSwitchButtonClicked(QWidget* button, QWidget* page) {
   ui_.settings_button->setVisible(ui_.settings_button != button);
   ui_.logs_button->setVisible(ui_.logs_button != button);
 }
+
+void MainWindow::onFullscreenSwitch() {
+  this->setWindowState(this->windowState() ^ Qt::WindowFullScreen);
+}
+
+void MainWindow::onExit() { QApplication::quit(); }
 
 }  // namespace rclock::ui

@@ -9,8 +9,13 @@ Settings::Settings(core::Config* config, core::MainTimer* main_timer)
   ui_.time_zone_service_key_edit->setText(config_->get().time_zone_service_key);
   ui_.latitude_edit->setValue(config_->get().coordinates.latitude);
   ui_.longitude_edit->setValue(config_->get().coordinates.longitude);
-  QObject::connect(ui_.update_settings_button, &QPushButton::clicked, this,
-                   &Settings::onUpdateSettingsButtonClicked);
+  connect(ui_.update_settings_button, &QPushButton::clicked,  //
+          this, &Settings::onUpdateSettingsButtonClicked);
+
+  connect(ui_.fullscreen_button, &QPushButton::clicked,  //
+          this, &Settings::fullscreenSwitchRequested);
+  connect(ui_.exit_button, &QPushButton::clicked,  //
+          this, &Settings::exitRequested);
 }
 
 void Settings::onUpdateSettingsButtonClicked() {

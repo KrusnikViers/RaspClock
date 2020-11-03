@@ -18,6 +18,8 @@ class MainWindow : public QMainWindow {
 
  private slots:
   void onSwitchButtonClicked(QWidget* button, QWidget* page);
+  void onFullscreenSwitch();
+  void onExit();
 
  private:
   Ui::MainWindow ui_;
