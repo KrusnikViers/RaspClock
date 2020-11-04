@@ -1,0 +1,17 @@
+sudo: required
+dist: bionic
+language: cpp
+git:
+  depth: 1
+
+compiler:
+  - gcc
+  - clang
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - make
