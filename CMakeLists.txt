@@ -19,22 +19,32 @@ set(CMAKE_CXX_REQUIRED TRUE)
 
 set (SOURCES
     src/core/config.cpp
+    src/core/config.h
     src/core/logs_recorder.cpp
+    src/core/logs_recorder.h
     src/core/main_timer.cpp
+    src/core/main_timer.h
     src/data/time_provider.cpp
     src/data/time_provider.cpp
     src/data/time_zone_provider.cpp
+    src/data/time_zone_provider.h
     src/main.cpp
     src/ui/display.cpp
+    src/ui/display.h
     src/ui/display.ui
     src/ui/logs.cpp
+    src/ui/logs.h
     src/ui/logs.ui
     src/ui/main_window.cpp
+    src/ui/main_window.h
     src/ui/main_window.ui
     src/ui/settings.cpp
+    src/ui/settings.h
     src/ui/settings.ui
     src/ui/util/text_helpers.cpp
+    src/ui/util/text_helpers.h
     src/ui/util/widget_ratio_filter.cpp
+    src/ui/util/widget_ratio_filter.h
 )
 
 add_executable(raspclock WIN32 ${SOURCES})
