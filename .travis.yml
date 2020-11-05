@@ -8,16 +8,16 @@ addons:
       - qt515base
       - mesa-common-dev
       - libglu1-mesa-dev
+      - g++-7
     sources:
       - sourceline: 'ppa:beineri/opt-qt-5.15.0-xenial'
 
-compiler:
-  - gcc
-  - clang
-
 before_script:
+  - export CC=gcc-7
+  - export CXX=g++-7
   - mkdir build
   - cd build
+  - cmake --version
   - cmake ..
 
 script:
