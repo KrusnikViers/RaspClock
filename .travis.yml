@@ -6,6 +6,8 @@ addons:
   apt:
     packages:
       - qt515base
+      - mesa-common-dev
+      - libglu1-mesa-dev
     sources:
       - sourceline: 'ppa:beineri/opt-qt-5.15.0-xenial'
 
