@@ -11,6 +11,7 @@ addons:
       - g++-7
     sources:
       - sourceline: 'ppa:beineri/opt-qt-5.15.0-xenial'
+      - ubuntu-toolchain-r-test
 
 before_script:
   - export CC=gcc-7
