@@ -39,3 +39,5 @@ deploy:
     - bin/**/*.dll
     - bin/**/*.exe
   skip_cleanup: true
+  on:
+    branch: master
