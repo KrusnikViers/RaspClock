@@ -36,8 +36,8 @@ deploy:
   api_key: $GHUB_TOKEN
   file_glob: true
   file:
-    - bin/**/*.dll
-    - bin/**/*.exe
+    - **/*.dll
+    - **/*.exe
   skip_cleanup: true
   on:
     branch: master
