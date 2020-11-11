@@ -52,6 +52,10 @@ set (SOURCES
 add_executable(raspclock WIN32 ${SOURCES})
 target_include_directories(raspclock PRIVATE src)
 set_target_properties(raspclock PROPERTIES AUTOMOC ON AUTOUIC ON)
+if (NOT DEFINED CI_BUILD_ID)
+    set (CI_BUILD_ID "dev")
+endif()
+target_compile_definitions(raspclock PRIVATE CI_BUILD_ID=${CI_BUILD_ID})
 
 
 

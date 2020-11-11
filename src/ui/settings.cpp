@@ -16,6 +16,8 @@ Settings::Settings(core::Config* config, core::MainTimer* main_timer)
           this, &Settings::fullscreenSwitchRequested);
   connect(ui_.exit_button, &QPushButton::clicked,  //
           this, &Settings::exitRequested);
+
+  ui_.version_label->setText("Version: " + core::appVersion());
 }
 
 void Settings::onUpdateSettingsButtonClicked() {

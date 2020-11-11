@@ -73,6 +73,14 @@
       <bool>true</bool>
      </property>
      <widget class="QWidget" name="srv_10">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>629</width>
+        <height>364</height>
+       </rect>
+      </property>
       <layout class="QGridLayout" name="gridLayout">
        <property name="leftMargin">
         <number>0</number>
@@ -89,7 +97,20 @@
        <property name="spacing">
         <number>0</number>
        </property>
-       <item row="0" column="0">
+       <item row="1" column="1" rowspan="2">
+        <spacer name="srv_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
         <widget class="QGroupBox" name="srv">
          <property name="title">
           <string>Geographical settings</string>
@@ -148,7 +169,7 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="0">
         <spacer name="srv_6">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -161,18 +182,18 @@
          </property>
         </spacer>
        </item>
-       <item row="0" column="1" rowspan="2">
-        <spacer name="srv_5">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="version_label">
+         <property name="text">
+          <string>Version</string>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
+         <property name="alignment">
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
          </property>
-        </spacer>
+         <property name="margin">
+          <number>10</number>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
