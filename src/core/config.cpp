@@ -19,7 +19,7 @@ QSettings createSettingsIO() {
 #else
   QDir settings_directory(
       QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-  if (!settings_directory.exists()) data_directory.mkpath(".");
+  if (!settings_directory.exists()) settings_directory.mkpath(".");
 #endif
   return QSettings(settings_directory.absoluteFilePath("settings.ini"),
                    QSettings::IniFormat);
