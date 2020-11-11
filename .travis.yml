@@ -2,6 +2,10 @@ dist: xenial
 language: cpp
 os: linux
 
+branches:
+  except:
+    - /^ci-\d/
+
 addons:
   apt:
     packages:
@@ -35,7 +39,7 @@ deploy:
   provider: releases
   api_key: $GHUB_TOKEN
   file_glob: true
-  file: ./*
+  file: ./bin/*
   skip_cleanup: true
   on:
     branch: master
