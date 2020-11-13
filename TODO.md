@@ -1,7 +1,6 @@
 ### Deployment
 
-* [ ] Set up Travis builds
-* [ ] Set up AppVeyor builds
+* [ ] Check remote version and compare with current one
 * [ ] Figure out, how to self-update
 
 ### Functional

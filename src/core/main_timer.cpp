@@ -15,6 +15,7 @@ MainTimer::MainTimer() {
 
   event_queue_.push({0, kSecondMsec, kUpdateClock});
   event_queue_.push({0, 4 * kHourMsec, kUpdateTimeZone});
+  event_queue_.push({10, 24 * kHourMsec, kUpdateApplication});
 
   timer_.setSingleShot(true);
   connect(&timer_, &QTimer::timeout, this, &MainTimer::onTimer);
@@ -46,6 +47,9 @@ void MainTimer::emitSignal(SignalType type) {
       return;
     case kUpdateTimeZone:
       emit(updateTimeZone());
+      return;
+    case kUpdateApplication:
+      emit(updateApp());
       return;
     default:
       assert(false);

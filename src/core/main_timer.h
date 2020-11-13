@@ -15,6 +15,7 @@ class MainTimer : public QObject {
  signals:
   void updateClock();
   void updateTimeZone();
+  void updateApp();
 
  private slots:
   void onTimer();
@@ -23,6 +24,7 @@ class MainTimer : public QObject {
   enum SignalType {
       kUpdateClock = 0,
       kUpdateTimeZone,
+      kUpdateApplication,
   };
 
   struct PlannedEvent {
