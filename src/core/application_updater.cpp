@@ -9,61 +9,54 @@ namespace rclock::core {
 
 namespace {
 
-const QString kRunningCopyDir = "old_version";
-const QString kNewBinaryDir   = "new_version";
+const QString kOldVersionDir = "old_version";
+const QString kNewVersionDir = "new_version";
+
+QString join(const QDir& dir, const QString& contents) {
+  return dir.path() + QDir::separator() + contents;
+}
+
+void moveFileIfExists(const QDir& from, const QDir& to,
+                      const QString& file_name) {
+  if (!QFile::exists(join(from, file_name))) return;
+  assert(QFile(join(from, file_name)).rename(join(to, file_name)));
+}
 
 }  // namespace
 
 void cleanOldCopy() {
-  QDir current_dir = QDir(QCoreApplication::applicationDirPath());
-  assert(current_dir.exists());
-
-  QDir running_copy_dir = current_dir;
-  running_copy_dir.cd(kRunningCopyDir);
-  if (!running_copy_dir.exists()) return;
-
-  current_dir.rmdir(kRunningCopyDir);
-  assert(!running_copy_dir.exists());
+  QDir old_version_dir(join(QDir::current(), kOldVersionDir));
+  if (!old_version_dir.exists()) return;
+  assert(old_version_dir.removeRecursively());
 }
 
 void restartAndUpdateApplication() {
   // Make sure, that existing dump of previous version was removed.
   cleanOldCopy();
 
-  QFile current_binary(QCoreApplication::applicationFilePath());
-  assert(current_binary.exists());
-  QDir current_dir = QDir(QCoreApplication::applicationDirPath());
-  assert(current_dir.exists());
-  const QString app_binary_path = current_binary.fileName();
+  const QDir current_dir = QDir::current();
+  const QString binary_name =
+      QFileInfo(QCoreApplication::applicationFilePath()).fileName();
 
-  // We should at least ensure, that new version already downloaded.
-  QDir new_binary_dir = current_dir;
-  current_dir.cd(kNewBinaryDir);
-  assert(new_binary_dir.exists());
-
-  // Create directory to dump current version of the application.
-  if (!current_dir.mkdir(kRunningCopyDir))
+  // Create new directory to dump current version of the application.
+  if (!current_dir.mkdir(kOldVersionDir))
     qDebug() << "Copy directory creation error in " << current_dir.path();
-  QDir running_copy_dir = current_dir;
-  running_copy_dir.cd(kRunningCopyDir);
-  assert(running_copy_dir.exists());
+  const QDir old_version_dir = QDir(join(current_dir, kOldVersionDir));
+  const QDir new_version_dir(join(current_dir, kNewVersionDir));
 
-  // Move current executable file in the dump directory. This action should be
-  // available in both Windows and Linux OS.
-  current_binary.rename(running_copy_dir.path() + QDir::separator() +
-                        current_binary.fileName());
-
-  // Move everything from existing binary dir to the current directory.
-  // Expected, that binary name was not changed.
-  for (const QString& entry : new_binary_dir.entryList(QDir::Files)) {
-    QFile::rename(new_binary_dir.path() + QDir::separator() + entry,
-                  current_dir.path() + QDir::separator() + entry);
+  // Move all existing files, that are going to be replaced, in the dump
+  // directory, replacing them one by one. After that, directory for new version
+  // should be empty and could be removed.
+  for (const QString& file_name : new_version_dir.entryList(QDir::Files)) {
+    moveFileIfExists(current_dir, old_version_dir, file_name);
+    moveFileIfExists(new_version_dir, current_dir, file_name);
   }
-  current_dir.rmdir(kNewBinaryDir);
+  assert(current_dir.rmdir(kNewVersionDir));
 
   // Start new binary and exit from the current one.
   for (QWindow* window : QApplication::allWindows()) window->hide();
-  assert(QProcess::execute(app_binary_path, QStringList()));
+  assert(
+      QProcess::startDetached(join(current_dir, binary_name), QStringList()));
   QApplication::quit();
 }
 

@@ -13,12 +13,13 @@ class Settings : public QWidget {
  public:
   Settings(core::Config* config, core::MainTimer* main_timer);
 
- private slots:
-  void onUpdateSettingsButtonClicked();
-
-signals:
+ signals:
   void fullscreenSwitchRequested();
   void exitRequested();
+
+private slots:
+ void onUpdateSettingsButtonClicked();
+ void onCheckUpdatesButtonClicked();
 
  private:
   Ui::Settings ui_;

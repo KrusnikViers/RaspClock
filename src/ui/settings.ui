@@ -86,7 +86,7 @@
         <number>0</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>10</number>
        </property>
        <property name="rightMargin">
         <number>0</number>
@@ -94,10 +94,26 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <property name="spacing">
+       <property name="horizontalSpacing">
         <number>0</number>
        </property>
-       <item row="1" column="1" rowspan="2">
+       <property name="verticalSpacing">
+        <number>10</number>
+       </property>
+       <item row="3" column="0">
+        <spacer name="srv_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1" rowspan="2">
         <spacer name="srv_5">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -110,7 +126,7 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="0">
         <widget class="QGroupBox" name="srv">
          <property name="title">
           <string>Geographical settings</string>
@@ -169,30 +185,27 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
-        <spacer name="srv_6">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="version_group_box">
+         <property name="title">
+          <string>Current version</string>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="version_label">
-         <property name="text">
-          <string>Version</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignHCenter|Qt::AlignTop</set>
-         </property>
-         <property name="margin">
-          <number>10</number>
-         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="version_check_time">
+            <property name="text">
+             <string>Never checked</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="check_updates">
+            <property name="text">
+             <string>Check for updates</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>

@@ -1,5 +1,7 @@
 #include "ui/settings.h"
 
+#include "core/application_updater.h"
+
 namespace rclock::ui {
 
 Settings::Settings(core::Config* config, core::MainTimer* main_timer)
@@ -17,7 +19,9 @@ Settings::Settings(core::Config* config, core::MainTimer* main_timer)
   connect(ui_.exit_button, &QPushButton::clicked,  //
           this, &Settings::exitRequested);
 
-  ui_.version_label->setText("Version: " + core::appVersion());
+  ui_.version_group_box->setTitle("Current version: " + core::appVersion());
+  connect(ui_.check_updates, &QPushButton::clicked,  //
+          this, &Settings::onCheckUpdatesButtonClicked);
 }
 
 void Settings::onUpdateSettingsButtonClicked() {
@@ -26,6 +30,10 @@ void Settings::onUpdateSettingsButtonClicked() {
   new_settings.coordinates.latitude  = ui_.latitude_edit->value();
   new_settings.coordinates.longitude = ui_.longitude_edit->value();
   config_->set(std::move(new_settings));
+}
+
+void Settings::onCheckUpdatesButtonClicked() {
+    core::restartAndUpdateApplication();
 }
 
 }  // namespace rclock::ui
