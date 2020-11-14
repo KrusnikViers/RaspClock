@@ -21,23 +21,28 @@ class MainTimer : public QObject {
   void onTimer();
 
  private:
-  enum SignalType {
+  enum TimerEventType {
+      // Periodic signals.
       kUpdateClock = 0,
       kUpdateTimeZone,
       kUpdateApplication,
+
+      // Oneshot events.
+      kCleanOldVersionDump,
   };
 
   struct PlannedEvent {
     quint64 timestamp_msec;
+    // If period is 0, event will not be resheduled.
     quint64 period_msec;
-    SignalType signal_type;
+    TimerEventType event_type;
 
     bool operator>(const PlannedEvent& other) const {
       return timestamp_msec > other.timestamp_msec;
     }
   };
 
-  void emitSignal(SignalType type);
+  void processTimerEvent(TimerEventType type);
 
   QTimer timer_;
   QElapsedTimer monotonic_timer_;
