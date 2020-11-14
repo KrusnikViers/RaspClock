@@ -20,6 +20,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_REQUIRED TRUE)
 
 set (SOURCES
+    src/core/application_updater.cpp
+    src/core/application_updater.h
     src/core/config.cpp
     src/core/config.h
     src/core/logs_recorder.cpp
