@@ -12,6 +12,7 @@ struct GeoCoordinates {
 struct AppSettings {
   QString time_zone_service_key;
   GeoCoordinates coordinates;
+  bool is_autoupdates_enabled = false;
 };
 
 class Config : public QObject {

@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 
-#include "core/application_updater.h"
+#include "core/app_updater.h"
 #include "core/config.h"
 #include "data/time_provider.h"
 #include "ui/display.h"

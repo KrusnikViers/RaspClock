@@ -9,6 +9,7 @@ namespace {
 const QString kLatitudeName           = "latitude";
 const QString kLongitudeName          = "longitude";
 const QString kTimeZoneServiceKeyName = "time_zone_key";
+const QString kAutoupdatesKeyName     = "autoupdate";
 
 QSettings createSettingsIO() {
 #ifndef NDEBUG
@@ -40,6 +41,8 @@ void Config::readData() {
       settings_io.value(kLongitudeName, 0.0).toDouble();
   cached_settings_.time_zone_service_key =
       settings_io.value(kTimeZoneServiceKeyName, QString()).toString();
+  cached_settings_.is_autoupdates_enabled =
+      settings_io.value(kAutoupdatesKeyName, false).toBool();
 
   // Migrate settings, if anything changed in binary.
   writeData();
@@ -52,6 +55,8 @@ void Config::writeData() {
   settings_io.setValue(kLongitudeName, cached_settings_.coordinates.longitude);
   settings_io.setValue(kTimeZoneServiceKeyName,
                        cached_settings_.time_zone_service_key);
+  settings_io.setValue(kAutoupdatesKeyName,
+                       cached_settings_.is_autoupdates_enabled);
 }
 
 }  // namespace rclock::core

@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include "core/application_updater.h"
+#include "core/app_updater.h"
 #include "core/config.h"
 #include "core/main_timer.h"
 #include "data/time_provider.h"
@@ -25,7 +25,7 @@ class Settings : public QWidget {
   void onUpdateSettingsButtonClicked();
   void onCheckUpdatesButtonClicked();
 
-  void onUpdatesChecked();
+  void onUpdatesChecked(bool new_version);
 
  private:
   Ui::Settings ui_;

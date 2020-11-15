@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+#include "core/config.h"
 #include "core/main_timer.h"
 #include "core/network.h"
 
@@ -11,9 +12,8 @@ class ApplicationUpdater : public QObject {
   Q_OBJECT
 
  public:
-  static QString currentVersion();
-
-  ApplicationUpdater(MainTimer* main_timer, NetworkRequestor* requestor);
+  ApplicationUpdater(Config* config, MainTimer* main_timer,
+                     NetworkRequestor* requestor);
 
  public slots:
   void initiateUpdate();
@@ -23,10 +23,11 @@ class ApplicationUpdater : public QObject {
                         const QString& data);
 
  signals:
-  void updatesChecked();
+  void updatesChecked(bool new_version);
 
  private:
   NetworkRequestor* requestor_ = nullptr;
+  Config* config_              = nullptr;
 };
 
 }  // namespace rclock::core

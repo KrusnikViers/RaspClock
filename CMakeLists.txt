@@ -20,8 +20,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_REQUIRED TRUE)
 
 set (SOURCES
-    src/core/application_updater.cpp
-    src/core/application_updater.h
+    src/core/app_info.cpp
+    src/core/app_info.h
+    src/core/app_updater.cpp
+    src/core/app_updater.h
     src/core/config.cpp
     src/core/config.h
     src/core/logs_recorder.cpp
@@ -59,7 +61,12 @@ set_target_properties(raspclock PROPERTIES AUTOMOC ON AUTOUIC ON)
 if (NOT DEFINED CI_BUILD_ID)
     set (CI_BUILD_ID "dev")
 endif()
-target_compile_definitions(raspclock PRIVATE CI_BUILD_ID=${CI_BUILD_ID})
+if (NOT DEFINED CI_COMMIT_HASH)
+    set (CI_COMMIT_HASH "unknown")
+endif()
+target_compile_definitions(raspclock PRIVATE
+                           CI_BUILD_ID=${CI_BUILD_ID}
+                           CI_COMMIT_HASH=${CI_COMMIT_HASH})
 
 
 

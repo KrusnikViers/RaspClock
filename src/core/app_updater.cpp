@@ -1,4 +1,4 @@
-#include "core/application_updater.h"
+#include "core/app_updater.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -6,8 +6,7 @@
 #include <QWindow>
 #include <QtCore>
 
-#define STRINGIFY(x) #x
-#define MACRO_TO_STRING(x) STRINGIFY(x)
+#include "core/app_info.h"
 
 namespace rclock::core {
 
@@ -16,9 +15,9 @@ namespace {
 const QString kOldVersionDir = "old_version";
 const QString kNewVersionDir = "new_version";
 
+const QString kReleaseTagPrefix = "ci-";
 const QString kLatestReleaseMetadataUrl =
     "https://api.github.com/repos/KrusnikViers/RaspClock/releases/latest";
-const QString kReleaseTagPrefix = "ci-";
 
 QString join(const QDir& dir, const QString& contents) {
   return dir.path() + QDir::separator() + contents;
@@ -66,30 +65,11 @@ void restartAndUpdateApplication() {
   QApplication::quit();
 }
 
-int calculateBuildVersion() {
-  const QString string_id(MACRO_TO_STRING(CI_BUILD_ID));
-  if (string_id == "dev") return 0;
-  bool conversion_ok;
-  uint version = string_id.toUInt(&conversion_ok);
-  if (!conversion_ok) {
-    qDebug() << "Weird CI_BUILD_ID value, that could not be parsed: "
-             << string_id;
-    return 0;
-  }
-  return version;
-}
-
-const int current_version_id = calculateBuildVersion();
-
 }  // namespace
 
-QString ApplicationUpdater::currentVersion() {
-  return QString("1.0.") + MACRO_TO_STRING(CI_BUILD_ID);
-}
-
-ApplicationUpdater::ApplicationUpdater(MainTimer* main_timer,
+ApplicationUpdater::ApplicationUpdater(Config* config, MainTimer* main_timer,
                                        NetworkRequestor* requestor)
-    : requestor_(requestor) {
+    : requestor_(requestor), config_(config) {
   connect(main_timer, &MainTimer::updateApp,  //
           this, &ApplicationUpdater::initiateUpdate);
   connect(requestor, &NetworkRequestor::getFinished,  //
@@ -105,21 +85,20 @@ void ApplicationUpdater::onRequestFetched(RequestType type,
                                           RequestStatus status,
                                           const QString& data) {
   if (type == kLatestReleaseMetadata && status == kDone) {
-    emit(updatesChecked());
     QJsonObject releases_metadata =
         QJsonDocument::fromJson(data.toUtf8()).object();
-    QString tag_name = releases_metadata.value("tag_name").toString();
-    if (!tag_name.startsWith(kReleaseTagPrefix)) {
-      qDebug() << "Weird release tag (does not start with prefix "
-               << kReleaseTagPrefix << " : " << tag_name;
-      return;
+    const bool is_new_version =
+        (kAppBuildCommitHash !=
+         releases_metadata.value("target_commitish").toString());
+    if (is_new_version) {
+      qDebug() << "New release found: "
+               << releases_metadata.value("target_commitish").toString()
+               << " vs current " << kAppFullVersion;
     }
-    tag_name.remove(0, kReleaseTagPrefix.length());
-    int new_version = tag_name.toUInt();
-    if (new_version > current_version_id) {
-      qDebug() << "Hey, I found a new version! It is " << new_version << " vs "
-               << current_version_id;
+    if (is_new_version && config_->get().is_autoupdates_enabled) {
+      // restartAndUpdateApplication();
     }
+    emit(updatesChecked(is_new_version));
   }
 }
 

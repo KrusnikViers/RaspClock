@@ -1,6 +1,6 @@
 #include <QtWidgets>
 
-#include "core/application_updater.h"
+#include "core/app_updater.h"
 #include "core/config.h"
 #include "core/logs_recorder.h"
 #include "core/main_timer.h"
@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
   rclock::core::MainTimer main_timer;
   rclock::core::NetworkRequestor network_requestor;
 
-  rclock::core::ApplicationUpdater app_updater(&main_timer, &network_requestor);
+  rclock::core::ApplicationUpdater app_updater(&config, &main_timer, &network_requestor);
 
   rclock::data::TimeProvider time_provider(&config, &main_timer);
 
