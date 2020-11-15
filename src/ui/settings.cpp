@@ -24,7 +24,8 @@ Settings::Settings(core::Config* config, core::MainTimer* main_timer,
   connect(ui_.exit_button, &QPushButton::clicked,  //
           this, &Settings::exitRequested);
 
-  ui_.version_group_box->setTitle("Current version: " + core::appVersion());
+  ui_.version_group_box->setTitle("Current version: " +
+                                  core::ApplicationUpdater::currentVersion());
   connect(ui_.check_updates, &QPushButton::clicked,  //
           this, &Settings::onCheckUpdatesButtonClicked);
   connect(app_updater, &core::ApplicationUpdater::updatesChecked,  //

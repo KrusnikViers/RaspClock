@@ -11,6 +11,8 @@ class ApplicationUpdater : public QObject {
   Q_OBJECT
 
  public:
+  static QString currentVersion();
+
   ApplicationUpdater(MainTimer* main_timer, NetworkRequestor* requestor);
 
  public slots:

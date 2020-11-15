@@ -14,8 +14,6 @@ struct AppSettings {
   GeoCoordinates coordinates;
 };
 
-QString appVersion();
-
 class Config : public QObject {
   Q_OBJECT
  public:

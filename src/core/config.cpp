@@ -2,9 +2,6 @@
 
 #include <QDir>
 
-#define STRINGIFY(x) #x
-#define MACRO_TO_STRING(x) STRINGIFY(x)
-
 namespace rclock::core {
 
 namespace {
@@ -26,10 +23,6 @@ QSettings createSettingsIO() {
 }
 
 }  // namespace
-
-QString appVersion() {
-    return QString("1.0.") + MACRO_TO_STRING(CI_BUILD_ID);
-}
 
 Config::Config() { readData(); }
 
