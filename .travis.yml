@@ -14,8 +14,7 @@ addons:
       - libglu1-mesa-dev
       - g++-7
     sources:
-      - sourceline: 'ppa:beineri/opt-qt-5.15.0-focal '
-      - ubuntu-toolchain-r-test
+      - sourceline: 'ppa:beineri/opt-qt-5.15.0-focal'
 
 before_script:
   - export CC=gcc-7
@@ -40,8 +39,7 @@ deploy:
   api_key: $GHUB_TOKEN
   file_glob: true
   file: ./bin/*
-  name: Latest CI build
-  body: Automatic build of $TRAVIS_BRANCH ($TRAVIS_COMMIT) built by Travis CI on $(date +'%F %T %Z')
+  name: Latest auto (#$TRAVIS_BUILD_NUMBER)
   skip_cleanup: true
   target_commitish: $TRAVIS_COMMIT
   on:
