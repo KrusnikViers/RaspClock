@@ -1,4 +1,4 @@
-dist: xenial
+dist: focal
 language: cpp
 os: linux
 
@@ -14,7 +14,7 @@ addons:
       - libglu1-mesa-dev
       - g++-7
     sources:
-      - sourceline: 'ppa:beineri/opt-qt-5.15.0-xenial'
+      - sourceline: 'ppa:beineri/opt-qt-5.15.0-focal '
       - ubuntu-toolchain-r-test
 
 before_script:
