@@ -33,13 +33,17 @@ before_deploy:
   - git config --local user.name $GHUB_LOGIN
   - git config --local user.email $GHUB_EMAIL
   - git tag -f latest-ci
+  - git remote add gh https://${TRAVIS_REPO_SLUG%/*}:${GHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git
+  - git push -f gh latest-ci
+  - git remote remove gh
+
 
 deploy:
   provider: releases
   api_key: $GHUB_TOKEN
   file_glob: true
   file: ./bin/*
-  name: Latest auto (#$TRAVIS_BUILD_NUMBER)
+  name: Latest auto ($TRAVIS_BUILD_NUMBER)
   skip_cleanup: true
   target_commitish: $TRAVIS_COMMIT
   on:
