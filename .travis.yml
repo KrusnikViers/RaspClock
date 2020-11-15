@@ -23,9 +23,7 @@ before_script:
   - mkdir build
   - cd build
   - cmake --version
-  - cmake .. -DCMAKE_BUILD_TYPE=Release \
-             -DCI_BUILD_ID=$TRAVIS_BUILD_NUMBER \
-             -DCI_COMMIT_HASH=$TRAVIS_COMMIT
+  - cmake .. -DCMAKE_BUILD_TYPE=Release -DCI_BUILD_ID=$TRAVIS_BUILD_NUMBER -DCI_COMMIT_HASH="$TRAVIS_COMMIT"
 
 script:
   - make
