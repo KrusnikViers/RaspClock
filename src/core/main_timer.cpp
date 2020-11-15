@@ -19,8 +19,7 @@ MainTimer::MainTimer() {
 
   event_queue_.push({0, kSecondMsec, kUpdateClock});
   event_queue_.push({0, 4 * kHourMsec, kUpdateTimeZone});
-  event_queue_.push({10, 24 * kHourMsec, kUpdateApplication});
-  event_queue_.push({15 * kMinuteMsec, kOneshotPeriod, kCleanOldVersionDump});
+  event_queue_.push({5 * kMinuteMsec, 12 * kHourMsec, kUpdateApplication});
 
   timer_.setSingleShot(true);
   connect(&timer_, &QTimer::timeout, this, &MainTimer::onTimer);
@@ -57,9 +56,6 @@ void MainTimer::processTimerEvent(TimerEventType type) {
       return;
     case kUpdateApplication:
       emit(updateApp());
-      return;
-    case kCleanOldVersionDump:
-      cleanOldCopy();
       return;
     default:
       assert(false);

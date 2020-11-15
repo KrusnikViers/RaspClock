@@ -22,13 +22,9 @@ class MainTimer : public QObject {
 
  private:
   enum TimerEventType {
-      // Periodic signals.
       kUpdateClock = 0,
       kUpdateTimeZone,
       kUpdateApplication,
-
-      // Oneshot events.
-      kCleanOldVersionDump,
   };
 
   struct PlannedEvent {

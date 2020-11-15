@@ -28,6 +28,8 @@ set (SOURCES
     src/core/logs_recorder.h
     src/core/main_timer.cpp
     src/core/main_timer.h
+    src/core/network.cpp
+    src/core/network.h
     src/data/time_provider.cpp
     src/data/time_provider.cpp
     src/data/time_zone_provider.cpp

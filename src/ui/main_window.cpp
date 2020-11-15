@@ -7,6 +7,7 @@
 namespace rclock::ui {
 
 MainWindow::MainWindow(core::Config* config, core::MainTimer* main_timer,
+                       core::ApplicationUpdater* app_updater,
                        data::TimeProvider* time_provider) {
   ui_.setupUi(this);
 
@@ -22,7 +23,7 @@ MainWindow::MainWindow(core::Config* config, core::MainTimer* main_timer,
   connect(ui_.clock_button, &QPushButton::clicked,
           [this] { onSwitchButtonClicked(ui_.clock_button, display_page_); });
 
-  settings_page_ = new Settings(config, main_timer);
+  settings_page_ = new Settings(config, main_timer, app_updater, time_provider);
   ui_.stacked_widget->addWidget(settings_page_);
   connect(ui_.settings_button, &QPushButton::clicked, [this] {
     onSwitchButtonClicked(ui_.settings_button, settings_page_);

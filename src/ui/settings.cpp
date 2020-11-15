@@ -4,8 +4,13 @@
 
 namespace rclock::ui {
 
-Settings::Settings(core::Config* config, core::MainTimer* main_timer)
-    : config_(config), main_timer_(main_timer) {
+Settings::Settings(core::Config* config, core::MainTimer* main_timer,
+                   core::ApplicationUpdater* app_updater,
+                   data::TimeProvider* time_provider)
+    : config_(config),
+      main_timer_(main_timer),
+      app_updater_(app_updater),
+      time_provider_(time_provider) {
   ui_.setupUi(this);
 
   ui_.time_zone_service_key_edit->setText(config_->get().time_zone_service_key);
@@ -22,6 +27,8 @@ Settings::Settings(core::Config* config, core::MainTimer* main_timer)
   ui_.version_group_box->setTitle("Current version: " + core::appVersion());
   connect(ui_.check_updates, &QPushButton::clicked,  //
           this, &Settings::onCheckUpdatesButtonClicked);
+  connect(app_updater, &core::ApplicationUpdater::updatesChecked,  //
+          this, &Settings::onUpdatesChecked);
 }
 
 void Settings::onUpdateSettingsButtonClicked() {
@@ -32,8 +39,12 @@ void Settings::onUpdateSettingsButtonClicked() {
   config_->set(std::move(new_settings));
 }
 
-void Settings::onCheckUpdatesButtonClicked() {
-    core::restartAndUpdateApplication();
+void Settings::onCheckUpdatesButtonClicked() { app_updater_->initiateUpdate(); }
+
+void Settings::onUpdatesChecked() {
+  ui_.version_check_time->setText(
+      "Last check: " +
+      time_provider_->getDateTime().toString("dd.MM hh:mm:ss"));
 }
 
 }  // namespace rclock::ui

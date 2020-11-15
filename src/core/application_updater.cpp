@@ -12,6 +12,9 @@ namespace {
 const QString kOldVersionDir = "old_version";
 const QString kNewVersionDir = "new_version";
 
+const QString kLatestReleaseMetadataUrl =
+    "https://api.github.com/repos/KrusnikViers/RaspClock/releases/latest";
+
 QString join(const QDir& dir, const QString& contents) {
   return dir.path() + QDir::separator() + contents;
 }
@@ -21,8 +24,6 @@ void moveFileIfExists(const QDir& from, const QDir& to,
   if (!QFile::exists(join(from, file_name))) return;
   assert(QFile(join(from, file_name)).rename(join(to, file_name)));
 }
-
-}  // namespace
 
 void cleanOldCopy() {
   QDir old_version_dir(join(QDir::current(), kOldVersionDir));
@@ -58,6 +59,31 @@ void restartAndUpdateApplication() {
   assert(
       QProcess::startDetached(join(current_dir, binary_name), QStringList()));
   QApplication::quit();
+}
+
+}  // namespace
+
+ApplicationUpdater::ApplicationUpdater(MainTimer* main_timer,
+                                       NetworkRequestor* requestor)
+    : requestor_(requestor) {
+  connect(main_timer, &MainTimer::updateApp,  //
+          this, &ApplicationUpdater::initiateUpdate);
+  connect(requestor, &NetworkRequestor::getFinished,  //
+          this, &ApplicationUpdater::onRequestFetched);
+}
+
+void ApplicationUpdater::initiateUpdate() {
+  cleanOldCopy();
+  requestor_->get(kLatestReleaseMetadata, kLatestReleaseMetadataUrl);
+}
+
+void ApplicationUpdater::onRequestFetched(RequestType type,
+                                          RequestStatus status,
+                                          const QString& data) {
+  if (type == kLatestReleaseMetadata && status == kDone) {
+    emit(updatesChecked());
+    qDebug() << data;
+  }
 }
 
 }  // namespace rclock::core

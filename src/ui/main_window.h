@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 
+#include "core/application_updater.h"
 #include "core/config.h"
 #include "data/time_provider.h"
 #include "ui/display.h"
@@ -14,7 +15,9 @@ namespace rclock::ui {
 class MainWindow : public QMainWindow {
   Q_OBJECT
  public:
-  MainWindow(core::Config* config, core::MainTimer* main_timer, data::TimeProvider* time_provider);
+  MainWindow(core::Config* config, core::MainTimer* main_timer,
+             core::ApplicationUpdater* app_updater,
+             data::TimeProvider* time_provider);
 
  private slots:
   void onSwitchButtonClicked(QWidget* button, QWidget* page);
