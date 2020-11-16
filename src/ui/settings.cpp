@@ -17,6 +17,7 @@ Settings::Settings(core::Config* config, core::MainTimer* main_timer,
   ui_.time_zone_service_key_edit->setText(config_->get().time_zone_service_key);
   ui_.latitude_edit->setValue(config_->get().coordinates.latitude);
   ui_.longitude_edit->setValue(config_->get().coordinates.longitude);
+  ui_.autoupdate_checkbox->setChecked(config_->get().is_autoupdates_enabled);
   connect(ui_.update_settings_button, &QPushButton::clicked,  //
           this, &Settings::onUpdateSettingsButtonClicked);
 

@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QJsonObject>
+#include <QNetworkReply>
 #include <QWindow>
 #include <QtCore>
 
@@ -15,7 +16,6 @@ namespace {
 const QString kOldVersionDir = "old_version";
 const QString kNewVersionDir = "new_version";
 
-const QString kReleaseTagPrefix = "ci-";
 const QString kLatestReleaseMetadataUrl =
     "https://api.github.com/repos/KrusnikViers/RaspClock/releases/latest";
 
@@ -29,15 +29,16 @@ void moveFileIfExists(const QDir& from, const QDir& to,
   assert(QFile(join(from, file_name)).rename(join(to, file_name)));
 }
 
-void cleanOldCopy() {
+void cleanRemnants() {
   QDir old_version_dir(join(QDir::current(), kOldVersionDir));
-  if (!old_version_dir.exists()) return;
-  assert(old_version_dir.removeRecursively());
+  if (old_version_dir.exists()) assert(old_version_dir.removeRecursively());
+  QDir new_version_dir(join(QDir::current(), kNewVersionDir));
+  if (new_version_dir.exists()) assert(new_version_dir.removeRecursively());
 }
 
 void restartAndUpdateApplication() {
   // Make sure, that existing dump of previous version was removed.
-  cleanOldCopy();
+  cleanRemnants();
 
   const QDir current_dir = QDir::current();
   const QString binary_name =
@@ -74,32 +75,66 @@ ApplicationUpdater::ApplicationUpdater(Config* config, MainTimer* main_timer,
           this, &ApplicationUpdater::initiateUpdate);
   connect(requestor, &NetworkRequestor::getFinished,  //
           this, &ApplicationUpdater::onRequestFetched);
+  connect(requestor, &NetworkRequestor::downloadFinished,  //
+          this, &ApplicationUpdater::onFileDownloaded);
 }
 
 void ApplicationUpdater::initiateUpdate() {
-  cleanOldCopy();
-  requestor_->get(kLatestReleaseMetadata, kLatestReleaseMetadataUrl);
+  clearState();
+  metadata_reply_ = requestor_->get(kLatestReleaseMetadataUrl);
 }
 
-void ApplicationUpdater::onRequestFetched(RequestType type,
+void ApplicationUpdater::onRequestFetched(QNetworkReply* reply,
                                           RequestStatus status,
                                           const QString& data) {
-  if (type == kLatestReleaseMetadata && status == kDone) {
-    QJsonObject releases_metadata =
-        QJsonDocument::fromJson(data.toUtf8()).object();
-    const bool is_new_version =
-        (kAppBuildCommitHash !=
-         releases_metadata.value("target_commitish").toString());
-    if (is_new_version) {
-      qDebug() << "New release found: "
-               << releases_metadata.value("target_commitish").toString()
-               << " vs current " << kAppFullVersion;
-    }
-    if (is_new_version && config_->get().is_autoupdates_enabled) {
-      // restartAndUpdateApplication();
-    }
-    emit(updatesChecked(is_new_version));
+  if (reply != metadata_reply_) return;
+  if (status != kDone) {
+    clearState();
+    return;
   }
+
+  QJsonObject releases_metadata =
+      QJsonDocument::fromJson(data.toUtf8()).object();
+  const bool is_new_version =
+      (kAppBuildCommitHash !=
+       releases_metadata.value("target_commitish").toString());
+  emit(updatesChecked(is_new_version));
+
+  if (is_new_version && config_->get().is_autoupdates_enabled) {
+    QDir::current().mkdir(kNewVersionDir);
+    QDir new_version_dir(join(QDir::current(), kNewVersionDir));
+
+    for (const auto& asset_ref : releases_metadata.value("assets").toArray()) {
+      const QString url =
+          asset_ref.toObject().value("browser_download_url").toString();
+      const QString filepath =
+          join(new_version_dir, asset_ref.toObject().value("name").toString());
+      qDebug() << "Downloading " << filepath << " from " << url << "...";
+      downloading_files_.insert(requestor_->download(url, filepath));
+    }
+  }
+}
+
+void ApplicationUpdater::onFileDownloaded(QNetworkReply* reply,
+                                          RequestStatus status) {
+  if (!downloading_files_.count(reply)) return;
+  if (status != kDone) {
+    clearState();
+    return;
+  }
+
+  downloading_files_.erase(reply);
+  if (downloading_files_.empty()) restartAndUpdateApplication();
+}
+
+void ApplicationUpdater::clearState() {
+  if (metadata_reply_ != nullptr) {
+    metadata_reply_->abort();
+    metadata_reply_ = nullptr;
+  }
+  for (auto* reply : downloading_files_) reply->abort();
+  downloading_files_.clear();
+  cleanRemnants();
 }
 
 }  // namespace rclock::core

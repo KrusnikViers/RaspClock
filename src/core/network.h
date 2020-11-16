@@ -2,7 +2,8 @@
 
 #include <QNetworkAccessManager>
 #include <QObject>
-#include <set>
+#include <QFile>
+#include <map>
 
 namespace rclock::core {
 
@@ -13,26 +14,30 @@ enum RequestStatus {
   kError,
 };
 
-enum RequestType {
-  kLatestReleaseMetadata = 0,
-};
-
 class NetworkRequestor : public QObject {
   Q_OBJECT
  public:
   NetworkRequestor();
 
-  RequestStatus get(RequestType type, const QString& url);
+  // NetworkRequestor will handle all the required actions with QNetworkReply
+  // object. Clients, however, should use this pointer to distinguish emitted
+  // signals for different requests.
+  QNetworkReply* get(const QString& url);
+  QNetworkReply* download(const QString& url, const QString& filepath);
 
  signals:
-  void getFinished(RequestType type, RequestStatus status, const QString& data);
+  void getFinished(QNetworkReply* reply, RequestStatus status,
+                   const QString& data);
+  void downloadFinished(QNetworkReply* reply, RequestStatus status);
 
  private slots:
-  void onGetFinished(RequestType type);
+  void onGetFinished();
+  void onDownloadChunkReady(quint64 received, quint64 expected);
+  void onDownloadFinished();
 
  private:
   QNetworkAccessManager manager_;
-  std::set<RequestType> pending_requests_;
+  std::map<QNetworkReply*, std::unique_ptr<QFile>> downloading_files_;
 };
 
 }  // namespace rclock::core

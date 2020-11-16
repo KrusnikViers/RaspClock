@@ -51,6 +51,7 @@ void Config::readData() {
 void Config::writeData() {
   QSettings settings_io = createSettingsIO();
   qDebug() << "Writing settings to " << settings_io.fileName();
+  settings_io.clear();
   settings_io.setValue(kLatitudeName, cached_settings_.coordinates.latitude);
   settings_io.setValue(kLongitudeName, cached_settings_.coordinates.longitude);
   settings_io.setValue(kTimeZoneServiceKeyName,
