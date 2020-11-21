@@ -1,0 +1,18 @@
+kind: pipeline
+type: docker
+name: master
+platform:
+  os: linux
+  arch: arm
+
+steps:
+- name: test_greeting
+  image: alpine
+  trigger:
+    branch:
+    - master
+    event:
+    - push
+  commands:
+  - echo hello
+  - echo world
