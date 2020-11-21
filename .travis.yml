@@ -22,7 +22,7 @@ before_script:
   - mkdir build
   - cd build
   - cmake --version
-  - cmake .. -DCMAKE_BUILD_TYPE=Release -DCI_BUILD_ID=$TRAVIS_BUILD_NUMBER -DCI_COMMIT_HASH="$TRAVIS_COMMIT"
+  - cmake .. -DCMAKE_BUILD_TYPE=Release -DCI_BUILD_ID=$TRAVIS_BUILD_NUMBER -DCI_COMMIT_HASH="$TRAVIS_COMMIT" -DCI_TAG="auto-amd64-linux"
 
 script:
   - make
@@ -32,18 +32,17 @@ before_deploy:
   # Set up git user name and tag this commit
   - git config --local user.name $GHUB_LOGIN
   - git config --local user.email $GHUB_EMAIL
-  - git tag -f latest-ci
+  - git tag -f auto-amd64-linux
   - git remote add gh https://${TRAVIS_REPO_SLUG%/*}:${GHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git
-  - git push -f gh latest-ci
+  - git push -f gh auto-amd64-linux
   - git remote remove gh
-
 
 deploy:
   provider: releases
   api_key: $GHUB_TOKEN
   file_glob: true
   file: ./bin/*
-  name: Latest auto ($TRAVIS_BUILD_NUMBER)
+  name: Autorelease for amd64/Linux ($TRAVIS_BUILD_NUMBER)
   skip_cleanup: true
   target_commitish: $TRAVIS_COMMIT
   on:

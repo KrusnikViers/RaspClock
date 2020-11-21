@@ -20,6 +20,7 @@ QString calculatePrintableBuildId() {
   return string_id;
 }
 const QString kAppPrintableBuildId = calculatePrintableBuildId();
+const QString kAppReleaseTag = MACRO_TO_STRING(CI_TAG);
 
 const QString kAppBuildCommitHash  = MACRO_TO_STRING(CI_COMMIT_HASH);
 const QString kAppFullVersion = QString::number(kAppMajorVersion) + "." +

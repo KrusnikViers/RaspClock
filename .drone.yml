@@ -7,11 +7,12 @@ platform:
 
 steps:
 - name: test_greeting
-  image: fffaraz/qt:static
+  image: alpine
   trigger:
     branch:
     - master
     event:
     - push
   commands:
-  - ls
+  - echo hello
+  - echo world

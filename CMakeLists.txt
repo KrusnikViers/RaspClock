@@ -64,9 +64,17 @@ endif()
 if (NOT DEFINED CI_COMMIT_HASH)
     set (CI_COMMIT_HASH "unknown")
 endif()
+if (NOT DEFINED CI_TAG)
+  if (WIN32)
+    set (CI_TAG "auto-windows")
+  else()
+    set (CI_TAG "auto-amd64-linux")
+  endif()
+endif()
 target_compile_definitions(raspclock PRIVATE
                            CI_BUILD_ID=${CI_BUILD_ID}
-                           CI_COMMIT_HASH=${CI_COMMIT_HASH})
+                           CI_COMMIT_HASH=${CI_COMMIT_HASH}
+                           CI_TAG=${CI_TAG})
 
 
 

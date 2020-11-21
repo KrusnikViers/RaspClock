@@ -17,7 +17,7 @@ const QString kOldVersionDir = "old_version";
 const QString kNewVersionDir = "new_version";
 
 const QString kLatestReleaseMetadataUrl =
-    "https://api.github.com/repos/KrusnikViers/RaspClock/releases/latest";
+    "https://api.github.com/repos/KrusnikViers/RaspClock/releases";
 
 QString join(const QDir& dir, const QString& contents) {
   return dir.path() + QDir::separator() + contents;
@@ -93,8 +93,21 @@ void ApplicationUpdater::onRequestFetched(QNetworkReply* reply,
     return;
   }
 
-  QJsonObject releases_metadata =
-      QJsonDocument::fromJson(data.toUtf8()).object();
+  QJsonArray all_releases = QJsonDocument::fromJson(data.toUtf8()).array();
+  QJsonObject releases_metadata;
+  bool release_found = false;
+  for (const auto& release : all_releases) {
+    if (release.toObject().value("tag_name").toString() == kAppReleaseTag) {
+      releases_metadata = release.toObject();
+      release_found     = true;
+    }
+  }
+
+  if (!release_found) {
+    qDebug() << "Required release " << kAppReleaseTag << " was not found!";
+    return;
+  }
+
   const bool is_new_version =
       (kAppBuildCommitHash !=
        releases_metadata.value("target_commitish").toString());
