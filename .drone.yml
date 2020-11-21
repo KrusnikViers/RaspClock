@@ -1,18 +1,56 @@
 kind: pipeline
 type: docker
-name: master
+name: autotag
+trigger:
+  branch:
+  - master
+  event:
+  - push
+
+steps:
+- name: create-tag
+  image: alpine/git:latest
+  environment:
+    GHUB_TOKEN:
+      from_secret: GHUB_TOKEN
+  commands:
+  - git config --local user.name Viers
+  - git config --local user.email krusnik.viers@gmail.com
+  - git tag -f auto-arm32-linux
+  - git remote add gh https://KrusnikViers:$GHUB_TOKEN@github.com/KrusnikViers/RaspClock.git
+  - git push -f gh auto-arm32-linux
+
+
+---
+kind: pipeline
+type: docker
+name: autorelease
 platform:
   os: linux
   arch: arm
+trigger:
+  branch:
+  - master
+  event:
+  - tag
+  - push
 
 steps:
-- name: test_greeting
-  image: alpine
-  trigger:
-    branch:
-    - master
-    event:
-    - push
+- name: build
+  image: viers/qt-static:latest
   commands:
-  - echo hello
-  - echo world
+  - ldconfig -p | grep libGL.so
+  - export CC=gcc-7
+  - export CXX=g++-7
+  - mkdir build
+  - cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=Release -DCI_BUILD_ID=${DRONE_BUILD_NUMBER} -DCI_COMMIT_HASH="${DRONE_COMMIT_SHA}" -DCI_TAG="auto-arm32-linux" -DSTATIC_QT="TRUE"
+  - make
+
+- name: release
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: GHUB_TOKEN
+    title: arm32/Linux auto
+    files: ./build/bin/*

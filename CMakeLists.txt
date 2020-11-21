@@ -82,19 +82,26 @@ target_compile_definitions(raspclock PRIVATE
 
 # Set Qt5_DIR variable to make this work: (e.g. Qt\5.15.1\msvc2019_64\lib\cmake\Qt5)
 find_package(Qt5 COMPONENTS Widgets Network REQUIRED)
-target_link_libraries(raspclock Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network)
 
-macro(copy_qt5_dll COMPONENT)
-    add_custom_command(
-        TARGET raspclock POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:Qt5::${COMPONENT}> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    )
-endmacro()
-copy_qt5_dll(Widgets)
-copy_qt5_dll(Network)
-copy_qt5_dll(Core)
-copy_qt5_dll(Gui)
+if (NOT DEFINED STATIC_QT)
+  macro(copy_qt5_dll COMPONENT)
+      add_custom_command(
+          TARGET raspclock POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy_if_different
+              $<TARGET_FILE:Qt5::${COMPONENT}> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+      )
+  endmacro()
+  copy_qt5_dll(Widgets)
+  copy_qt5_dll(Network)
+  copy_qt5_dll(Core)
+  copy_qt5_dll(Gui)
+  target_link_libraries(raspclock Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network)
+else()
+  set(Qt5_USE_STATIC_LIBS ON)
+  set(Qt5_USE_STATIC_RUNTIME ON)
+  target_link_libraries(raspclock Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network -static)
+endif()
+
 
 if (WIN32)
     add_custom_command(

@@ -42,7 +42,7 @@ deploy:
   api_key: $GHUB_TOKEN
   file_glob: true
   file: ./bin/*
-  name: Autorelease for amd64/Linux ($TRAVIS_BUILD_NUMBER)
+  name: amd64/Linux auto
   skip_cleanup: true
   target_commitish: $TRAVIS_COMMIT
   on:
