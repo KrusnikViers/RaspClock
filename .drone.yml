@@ -37,8 +37,12 @@ trigger:
 
 steps:
 - name: build
-  image: viers/qt-static:latest
+  image: viers/qt-static:dev
   commands:
+  - rm -rf /usr/lib/libGL.so
+  - ln -s /usr/lib/arm-linux-gnueabihf/libGL.so.1.0.0 /usr/lib/libGL.so
+  - ln -s /usr/lib/arm-linux-gnueabihf/libGL.so.1.0.0 /usr/lib/libGL.so.1
+  - ls -ln /usr/lib/ | grep 'GL'
   - ldconfig -p | grep libGL.so
   - export CC=gcc-7
   - export CXX=g++-7
